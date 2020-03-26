@@ -83,7 +83,7 @@ declare interface Cell extends Base {
     hyperlink(hyperlink: string | undefined | IHyperlinkOptions): Cell;
     dataValidation(): object | undefined;
     dataValidation(dataValidation: object | undefined): Cell;
-    tap<T>(callback: (cell: Cell) => void): Cell;
+    tap(callback: (cell: Cell) => void): Cell;
     thru<T>(callback: (cell: Cell) => T): T;
     rangeTo(cell: Cell | string): Range;
     relativeCell(rowOffset: number, columnOffset: number): Cell;
@@ -97,7 +97,7 @@ declare interface Cell extends Base {
     style(name: string, values: StringArray2D): Range;
     value(): CellType;
     value(value: CellType): Cell;
-    value(valueArray: CellType[][]): Range;
+    value(valueArray: ReadonlyArray<ReadonlyArray<CellType>>): Range;
     addHorizontalPageBreak(): Cell;
 }
 
@@ -162,13 +162,13 @@ declare interface Range {
     style(name: string): Style[][];
     style(names: string[]): { [styleName: string]: Style };
     style(name: string, value: Style): Range;
-    tap<T>(callback: (range: Range) => void): Range;
+    tap(callback: (range: Range) => void): Range;
     thru<T>(callback: (range: Range) => T): T;
     value(): CellType[][];
     value(
         p:
             | CellType
-            | CellType[][]
+            | ReadonlyArray<ReadonlyArray<CellType>>
             | ((cell: Cell, ri: number, ci: number, range: Range) => any)
     ): Range;
     workbook(): Workbook;
@@ -279,17 +279,15 @@ declare interface Workbook {
     ): Sheet;
 }
 
-export = XlsxPopulate;
-export as namespace XlsxPopulate;
-declare namespace XlsxPopulate {
-    let MIME_TYPE: string;
-    const FormulaError: FormulaError;
-    const dateToNumber: (date: Date) => number;
-    const fromBlankAsync: () => Promise<Workbook>;
-    const fromDataAsync: (
+declare module "xlsx-populate" {
+    export let MIME_TYPE: string;
+    export const FormulaError: FormulaError;
+    export const dateToNumber: (date: Date) => number;
+    export const fromBlankAsync: () => Promise<Workbook>;
+    export const fromDataAsync: (
         data: DataTypes | Promise<DataTypes>,
         opts?: IOOptions
     ) => Promise<Workbook>;
-    const fromFileAsync: (path: string, opts?: IOOptions) => Promise<Workbook>;
-    const numberToDate: (n: number) => Date;
+    export const fromFileAsync: (path: string, opts?: IOOptions) => Promise<Workbook>;
+    export const numberToDate: (n: number) => Date;
 }
